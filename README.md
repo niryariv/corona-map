@@ -1,5 +1,7 @@
 # Simple Corona Map
 
+[**Demo Map Here**](https://niryariv.github.io/corona-map/)
+
 A key issue in stopping Corona spread is avoiding areas where known virus carriers visited during the incubation period. To this end, health organizations are releasing place / date itineraries.
 
 The code here is a very simple web map implementation that displays the data. The data source is a Google Sheet, so that it can edited and maintained by multiple users within a well known system (technically the source could be any CSV file with the spreadsheet format).
