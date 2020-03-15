@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simple Corona Map</title>
+	
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+
+	<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.70.0/dist/L.Control.Locate.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.70.0/dist/L.Control.Locate.min.js"
+		charset="utf-8"></script>
+
+
+	<script src="config.js"></script>
+	<script src="vendor/leaflet-providers.js"></script>
+	<script src="vendor/papaparse.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+	
+	<div id='map'></div>
+	
+	<script>
+		
+		var map = L.map('map');
+		var markers = L.featureGroup();
+		
+		L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key='+ACCESS_KEY, {
+			tileSize: 512,
+			zoomOffset: -1,
+			minZoom: 1,
+			attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+			crossOrigin: true
+		}).addTo(map);
+		
+
+
+		L.control.locate(
+			{
+				flyTo: true
+			}
+		).addTo(map);
+		map.on('locationerror', function(e){
+			console.log("LOCATION ERROR:", e.message);
+			return false;
+		});
+						
+		
+		Papa.parse(
+			SHEETS_URL,
+			{
+				download: true,
+				header: true,
+				complete: function(results) {
+					results.data.forEach(add_point);
+					map.fitBounds(markers.getBounds(), {padding: [20,20]});
+					markers.addTo(map);
+				}
+			}
+		);
+
+		
+		function add_point(p){
+			console.log(p)
+
+			
+			var icon = new L.Icon({
+				iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+				iconSize: [25, 41],
+				iconAnchor: [12, 41],
+				popupAnchor: [1, -34]
+			});
+
+			var i = p.last_visit_date.split('-');
+			var visit_date = new Date(i[2], i[1] - 1, i[0]);
+			var opacity = 1 - (days_since(visit_date) / EXPIRE_DAYS);
+
+			console.log(opacity)
+
+			var txt = '<div class="title">' + visit_date.toLocaleDateString() + "</div><br />\n<p>" + p.text + "</p>\n";
+			
+			var m = L.marker([p.lat, p.lon], {icon: icon, opacity: opacity}).bindPopup(txt);
+			markers.addLayer(m);
+		}
+		
+		function days_since(visit_date) {
+			return Math.round((Date.now() - visit_date) / (1000 * 60 * 60 * 24));
+		}
+	</script>
+</body>
+</html>

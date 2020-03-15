@@ -1,0 +1,34 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    height: 100%; width: 100vw;
+}
+
+*:focus {
+    outline: 0;
+}
+
+.leaflet-popup-content-wrapper {
+    direction: rtl;
+    font-size:16px;
+    line-height:24px;
+    text-align: right;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.nav-link {
+    text-align: center;
+}
+
+.icon-image {
+    background-color: #fff;
+    padding: 4px;
+    border-radius:50px;
+}
