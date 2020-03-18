@@ -37,9 +37,19 @@ Papa.parse(
 
 
 function add_point(p){
+ 
+    
+    if (p.position.trim() == '') return false;
+
+    // handle MIH data
+    p.last_visit_date = p.date;
+    p.text = p['orginal telegram text'];
+    l = p.position.split(',');
+    p.lat = l[0] ; p.lon = l[1];
+    
     console.log(p)
 
-    
+
     var icon = new L.Icon({
         iconUrl: '//raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
         iconSize: [25, 41],
@@ -47,14 +57,15 @@ function add_point(p){
         popupAnchor: [1, -34]
     });
 
-    var i = p.last_visit_date.split('-');
+    var i = p.last_visit_date.split(DATE_SEPARATOR);
     var visit_date = new Date(i[2], i[1] - 1, i[0]);
     var opacity = 1 - (days_since(visit_date) / EXPIRE_DAYS);
 
     // don't show locations where the risk period expired
     if (opacity <= 0) return false;
 
-    var txt = '<div class="title">' + visit_date.toLocaleDateString() + "</div><br />\n<p>" + p.text + "</p>\n";
+    var txt =   '<div class="title">' + visit_date.toLocaleDateString() + '</div>'
+                + '<p>' + p.text + '</p>';
     
     var m = L.marker([p.lat, p.lon], {icon: icon, opacity: opacity}).bindPopup(txt);
     markers.addLayer(m);
