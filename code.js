@@ -5,7 +5,7 @@ L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key='+ACCESS_
     tileSize: 512,
     zoomOffset: -1,
     minZoom: 1,
-    attribution: '<a href="https://github.com/niryariv/corona-map">Simple Corona Map</a> | <a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+    attribution: '<a href="https://github.com/niryariv/corona-map">Source</a> | <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQZyMxHcg-BMlCYnXnuielW-4Qbl5-HksZjIZNT0Pxw5SFcfxM5ZIfEutQMNtAomd637jxFXHbNPOKW/pub?output=csv">Data</a> from <a href="https://israelcoronamap.co.il/">IsraelCoronaMap</a> | <a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
     crossOrigin: true
 }).addTo(map);
 
