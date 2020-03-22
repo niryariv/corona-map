@@ -1,6 +1,8 @@
 var map = L.map('map');
 var markers = L.featureGroup();
 
+var latest_date = new Date(0);
+
 L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key='+ACCESS_KEY, {
     tileSize: 512,
     zoomOffset: -1,
@@ -31,6 +33,7 @@ Papa.parse(
             results.data.forEach(add_point);
             map.fitBounds(markers.getBounds(), {padding: [20,20]});
             markers.addTo(map);
+            console.log(latest_date);
         }
     }
 );
@@ -38,7 +41,6 @@ Papa.parse(
 
 function add_point(p){
  
-    
     if (p.position.trim() == '') return false;
 
     // handle MIH data
@@ -47,9 +49,6 @@ function add_point(p){
     l = p.position.split(',');
     p.lat = l[0] ; p.lon = l[1];
     
-    console.log(p)
-
-
     var icon = new L.Icon({
         iconUrl: '//raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
         iconSize: [25, 41],
@@ -61,6 +60,8 @@ function add_point(p){
     var visit_date = new Date(i[2], i[1] - 1, i[0]);
     var opacity = 1 - (days_since(visit_date) / EXPIRE_DAYS);
 
+    if (visit_date > latest_date) latest_date = visit_date;
+    
     // don't show locations where the risk period expired
     if (opacity <= 0) return false;
 
